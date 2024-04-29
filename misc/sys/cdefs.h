@@ -728,7 +728,6 @@
    older glibc platforms.  */
 #ifndef __GNULIB_CDEFS
 # include <bits/wordsize.h>
-# include <bits/long-double.h>
 #endif
 
 #if __LDOUBLE_REDIRECTS_TO_FLOAT128_ABI == 1
