@@ -1,5 +1,6 @@
 #ifndef _SYS_STAT_H
 #include <io/sys/stat.h>
+#include <features.h>
 
 #ifndef _ISOMAC
 /* Now define the internal interfaces. */
@@ -20,12 +21,12 @@ hidden_proto (__lxstat64)
 hidden_proto (__xstat)
 hidden_proto (__xstat64)
 #endif
-extern __inline__ int __stat (const char *__path, struct stat *__statbuf)
+__extern_inline int __stat (const char *__path, struct stat *__statbuf)
 {
   return __xstat (_STAT_VER, __path, __statbuf);
 }
 libc_hidden_proto (__xmknod)
-extern __inline__ int __mknod (const char *__path, __mode_t __mode,
+__extern_inline int __mknod (const char *__path, __mode_t __mode,
 			       __dev_t __dev)
 {
   return __xmknod (_MKNOD_VER, __path, __mode, &__dev);

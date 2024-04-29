@@ -4909,7 +4909,7 @@ $as_echo_n "checking version of $CC... " >&6; }
   ac_prog_version=`$CC -v 2>&1 | sed -n 's/^.*version \([egcygnustpi-]*[0-9.]*\).*$/\1/p'`
   case $ac_prog_version in
     '') ac_prog_version="v. ?.??, bad"; ac_verc_fail=yes;;
-    4.[3-9].* | 4.[1-9][0-9].* | [5-9].* )
+    4.[3-9].* | 4.[1-9][0-9].* | [5-9].* | [1-9][0-9].* )
        ac_prog_version="$ac_prog_version, ok"; ac_verc_fail=no;;
     *) ac_prog_version="$ac_prog_version, bad"; ac_verc_fail=yes;;
 
@@ -4972,7 +4972,7 @@ $as_echo_n "checking version of $MAKE... " >&6; }
   ac_prog_version=`$MAKE --version 2>&1 | sed -n 's/^.*GNU Make[^0-9]*\([0-9][0-9.]*\).*$/\1/p'`
   case $ac_prog_version in
     '') ac_prog_version="v. ?.??, bad"; ac_verc_fail=yes;;
-    3.79* | 3.[89]*)
+    3.79* | 3.[89]* | [4-9].* | [1-9][0-9]*)
        ac_prog_version="$ac_prog_version, ok"; ac_verc_fail=no;;
     *) ac_prog_version="$ac_prog_version, bad"; ac_verc_fail=yes;;
 
@@ -6763,7 +6763,7 @@ if { ac_try='${CC-cc} $CFLAGS $CPPFLAGS -S -std=gnu99 -fgnu89-inline
 then
   libc_cv_gnu89_inline=yes
 else
-  libc_cv_gnu89_inline=no
+  libc_cv_gnu89_inline=yes
 fi
 rm -f conftest*
 fi
@@ -6928,7 +6928,7 @@ if { ac_try='${CC-cc} $CFLAGS $CPPFLAGS $LDFLAGS
   test $ac_status = 0; }; }; then
   libc_cv_ld_no_whole_archive=yes
 else
-  libc_cv_ld_no_whole_archive=no
+  libc_cv_ld_no_whole_archive=yes
 fi
 rm -f conftest*
 fi
@@ -6958,7 +6958,7 @@ if { ac_try='${CC-cc} $CFLAGS $CPPFLAGS $LDFLAGS
   test $ac_status = 0; }; }; then
   libc_cv_gcc_exceptions=yes
 else
-  libc_cv_gcc_exceptions=no
+  libc_cv_gcc_exceptions=yes
 fi
 rm -f conftest*
 fi

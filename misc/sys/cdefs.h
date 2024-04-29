@@ -52,19 +52,27 @@
    gcc 2.8.x and egcs.  For gcc 3.2 and up we even mark C functions
    as non-throwing using a function attribute since programs can use
    the -fexceptions options for C code as well.  */
-# if !defined __cplusplus && __GNUC_PREREQ (3, 3)
+# if !defined __cplusplus \
+     && (__GNUC_PREREQ (3, 4) || __glibc_has_attribute (__nothrow__))
 #  define __THROW	__attribute__ ((__nothrow__ __LEAF))
 #  define __THROWNL	__attribute__ ((__nothrow__))
 #  define __NTH(fct)	__attribute__ ((__nothrow__ __LEAF)) fct
+#  define __NTHNL(fct)  __attribute__ ((__nothrow__)) fct
 # else
-#  if defined __cplusplus && __GNUC_PREREQ (2,8)
-#   define __THROW	throw ()
-#   define __THROWNL	throw ()
-#   define __NTH(fct)	__LEAF_ATTR fct throw ()
+#  if defined __cplusplus && (__GNUC_PREREQ (2,8) || __clang_major__ >= 4)
+#   if __cplusplus >= 201103L
+#    define __THROW	noexcept (true)
+#   else
+#    define __THROW	throw ()
+#   endif
+#   define __THROWNL	__THROW
+#   define __NTH(fct)	__LEAF_ATTR fct __THROW
+#   define __NTHNL(fct) fct __THROW
 #  else
 #   define __THROW
 #   define __THROWNL
 #   define __NTH(fct)	fct
+#   define __NTHNL(fct) fct
 #  endif
 # endif
 
