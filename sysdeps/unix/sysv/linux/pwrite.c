@@ -28,9 +28,7 @@
 #include <kernel-features.h>
 
 #ifdef __NR_pwrite64		/* Newer kernels renamed but it's the same.  */
-# ifdef __NR_pwrite
-#  error "__NR_pwrite and __NR_pwrite64 both defined???"
-# endif
+# undef __NR_pwrite
 # define __NR_pwrite __NR_pwrite64
 #endif
 

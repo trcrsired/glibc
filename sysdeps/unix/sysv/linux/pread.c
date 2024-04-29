@@ -28,9 +28,8 @@
 #include <kernel-features.h>
 
 #ifdef __NR_pread64		/* Newer kernels renamed but it's the same.  */
-# ifndef __NR_pread
+# undef __NR_pread
 # define __NR_pread __NR_pread64
-# endif
 #endif
 
 
