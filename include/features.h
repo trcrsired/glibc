@@ -152,7 +152,6 @@
 #undef	__GLIBC_USE_ISOC23
 #undef	__GLIBC_USE_DEPRECATED_GETS
 #undef	__GLIBC_USE_DEPRECATED_SCANF
-#undef	__GLIBC_USE_C23_STRTOL
 
 /* Suppress kernel-name space pollution unless user expressedly asks
    for it.  */
@@ -473,17 +472,6 @@
 # define __GLIBC_USE_DEPRECATED_SCANF 0
 #endif
 
-/* ISO C23 added support for a 0b or 0B prefix on binary constants as
-   inputs to strtol-family functions (base 0 or 2).  This macro is
-   used to condition redirection in headers to allow that redirection
-   to be disabled when building those functions, despite _GNU_SOURCE
-   being defined.  */
-#if __GLIBC_USE (ISOC23)
-# define __GLIBC_USE_C23_STRTOL 1
-#else
-# define __GLIBC_USE_C23_STRTOL 0
-#endif
-
 /* Get definitions of __STDC_* predefined macros, if the compiler has
    not preincluded this header automatically.  */
 #include <stdc-predef.h>
@@ -502,8 +490,58 @@
 #define	__GLIBC__	2
 #define	__GLIBC_MINOR__	39
 
+/* Define SOURCE and TARGET glibc versions for stable ABI.
+   TARGET macros will only be defined if user pass -D__GLIBC_TARGET__
+   and -D__GLIBC_MINOR_TARGET__*/
+#define __GLIBC_SOURCE__	__GLIBC__
+#define __GLIBC_MINOR_SOURCE__	__GLIBC_MINOR__
+
+#if defined(IS_IN)
+# if IS_IN(libc)
+#  ifndef __GLIBC_ABI_UNSTABLE__
+#   define __GLIBC_ABI_UNSTABLE__   1
+#  endif
+# endif
+#endif
+
+#ifndef __GLIBC_ABI_UNSTABLE__
+# define __GLIBC_ABI_STABLE__ 1
+# undef __GLIBC__
+# undef __GLIBC_MINOR__
+# if defined(__GLIBC_TARGET__) || defined(__GLIBC_MINOR_TARGET__)
+#  if !defined(__GLIBC_TARGET__) || !defined(__GLIBC_MINOR_TARGET__)
+#   error "Must define both __GLIBC_TARGET__ and __GLIBC_MINOR_TARGET__ macros"
+#  endif
+#  define	__GLIBC__	__GLIBC_TARGET__
+#  define	__GLIBC_MINOR__	__GLIBC_MINOR_TARGET__
+#  define	__GLIBC_TARGET_PREREQ(maj, min) \
+	 ((__GLIBC_TARGET__ << 16) + __GLIBC_MINOR_TARGET__ >= ((maj) << 16) + (min))
+# else
+#  define	__GLIBC__	2
+#  define	__GLIBC_MINOR__	34
+# endif
+#endif
+
+#define __GLIBC_SOURCE_PREREQ(maj, min) \
+	((__GLIBC_SOURCE__ << 16) + __GLIBC_MINOR_SOURCE__ >= ((maj) << 16) + (min))
+
 #define __GLIBC_PREREQ(maj, min) \
 	((__GLIBC__ << 16) + __GLIBC_MINOR__ >= ((maj) << 16) + (min))
+
+/* ISO C23 added support for a 0b or 0B prefix on binary constants as
+   inputs to strtol-family functions (base 0 or 2).  This macro is
+   used to condition redirection in headers to allow that redirection
+   to be disabled when building those functions, despite _GNU_SOURCE
+   being defined.  */
+#if __GLIBC_PREREQ(2,36)
+# if __GLIBC_USE (ISOC23)
+#  define __GLIBC_USE_C23_STRTOL 1
+# else
+#  define __GLIBC_USE_C23_STRTOL 0
+# endif
+#else
+# define __GLIBC_USE_C23_STRTOL 0
+#endif
 
 /* This is here only because every header file already includes this one.  */
 #ifndef __ASSEMBLER__
