@@ -485,16 +485,16 @@
 #undef  __GNU_LIBRARY__
 #define __GNU_LIBRARY__ 6
 
-/* Major and minor version number of the GNU C library package.  Use
-   these macros to test for features in specific releases.  */
-#define	__GLIBC__	2
-#define	__GLIBC_MINOR__	39
-
 /* Define SOURCE and TARGET glibc versions for stable ABI.
    TARGET macros will only be defined if user pass -D__GLIBC_TARGET__
    and -D__GLIBC_MINOR_TARGET__*/
-#define __GLIBC_SOURCE__	__GLIBC__
-#define __GLIBC_MINOR_SOURCE__	__GLIBC_MINOR__
+#define __GLIBC_SOURCE__	2
+#define __GLIBC_MINOR_SOURCE__	39
+
+/* Major and minor version number of the GNU C library package.  Use
+   these macros to test for features in specific releases.  */
+#define	__GLIBC__	__GLIBC_SOURCE__
+#define	__GLIBC_MINOR__	__GLIBC_MINOR_SOURCE__
 
 #if defined(IS_IN)
 # if IS_IN(libc)
