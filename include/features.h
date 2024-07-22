@@ -489,7 +489,7 @@
    TARGET macros will only be defined if user pass -D__GLIBC_TARGET__
    and -D__GLIBC_MINOR_TARGET__*/
 #define __GLIBC_SOURCE__	2
-#define __GLIBC_MINOR_SOURCE__	39
+#define __GLIBC_MINOR_SOURCE__	40
 
 /* Major and minor version number of the GNU C library package.  Use
    these macros to test for features in specific releases.  */
