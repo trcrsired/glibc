@@ -518,7 +518,11 @@
 	 ((__GLIBC_TARGET__ << 16) + __GLIBC_MINOR_TARGET__ >= ((maj) << 16) + (min))
 # else
 #  define	__GLIBC__	2
-#  define	__GLIBC_MINOR__	34
+#  if defined(__loongarch__)
+#   define	__GLIBC_MINOR__ 36
+#  else
+#   define	__GLIBC_MINOR__	34
+#  endif
 # endif
 #endif
 
