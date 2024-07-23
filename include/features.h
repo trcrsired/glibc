@@ -519,7 +519,7 @@
 # else
 #  define	__GLIBC__	2
 #  if defined(__loongarch__)
-#   define	__GLIBC_MINOR__ 36
+#   define	__GLIBC_MINOR__	36
 #  else
 #   define	__GLIBC_MINOR__	34
 #  endif
