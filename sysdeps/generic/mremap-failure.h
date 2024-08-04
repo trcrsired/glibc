@@ -1,5 +1,5 @@
-/* Get the scheduling parameters for a thread.  Generic version.
-   Copyright (C) 2002-2024 Free Software Foundation, Inc.
+/* mremap failure handling.  Generic version.
+   Copyright (C) 2024 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -13,24 +13,13 @@
    Lesser General Public License for more details.
 
    You should have received a copy of the GNU Lesser General Public
-   License along with the GNU C Library;  if not, see
+   License along with the GNU C Library; if not, see
    <https://www.gnu.org/licenses/>.  */
 
-#include <pthread.h>
-#include <shlib-compat.h>
-#include <pt-internal.h>
+/* Return exit value on mremap failure with errno ERR.  */
 
-int
-__pthread_getschedparam (pthread_t thread, int *policy,
-			 struct sched_param *param)
+static int
+mremap_failure_exit (int err)
 {
-  *policy = SCHED_OTHER;
-  param->sched_priority = 0;
-  return 0;
+  return EXIT_FAILURE;
 }
-
-versioned_symbol (libc, __pthread_getschedparam, pthread_getschedparam, GLIBC_2_21);
-
-#if OTHER_SHLIB_COMPAT (libpthread, GLIBC_2_12, GLIBC_2_21)
-compat_symbol (libc, __pthread_getschedparam, pthread_getschedparam, GLIBC_2_12);
-#endif
