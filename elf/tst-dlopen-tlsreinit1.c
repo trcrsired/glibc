@@ -1,5 +1,5 @@
-/* 64-bit time_t stat with error checking.
-   Copyright (C) 2021-2024 Free Software Foundation, Inc.
+/* Test that dlopen preserves already accessed TLS (bug 31717).
+   Copyright (C) 2024 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -16,17 +16,25 @@
    License along with the GNU C Library; if not, see
    <https://www.gnu.org/licenses/>.  */
 
-/* NB: Non-standard file name to avoid sysdeps override for xstat.  */
-
+#include <stdbool.h>
 #include <support/check.h>
-#include <support/xunistd.h>
-#include <sys/stat.h>
+#include <support/xdlfcn.h>
+#include <ctype.h>
 
-#if __TIMESIZE != 64
-void
-xlstat_time64 (const char *path, struct __stat64_t64 *result)
+static int
+do_test (void)
 {
-  if (__lstat64_time64 (path, result) != 0)
-    FAIL_EXIT1 ("__lstat64_time64 (\"%s\"): %m", path);
+  void *handle = xdlopen ("tst-dlopen-tlsreinitmod1.so", RTLD_NOW);
+
+  bool *tlsreinitmod3_tested = xdlsym (handle, "tlsreinitmod3_tested");
+  TEST_VERIFY (*tlsreinitmod3_tested);
+
+  xdlclose (handle);
+
+  /* This crashes if the libc.so.6 TLS image has been reverted.  */
+  TEST_VERIFY (!isupper ('@'));
+
+  return 0;
 }
-#endif
+
+#include <support/test-driver.c>

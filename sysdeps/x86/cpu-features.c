@@ -756,6 +756,12 @@ init_cpu_features (struct cpu_features *cpu_features)
   unsigned int stepping = 0;
   enum cpu_features_kind kind;
 
+  /* Default is avoid non-temporal memset for non Intel/AMD/Hygon hardware. This is,
+     as of writing this, we only have benchmarks indicatings it profitability
+     on Intel/AMD/Hygon.  */
+  cpu_features->preferred[index_arch_Avoid_Non_Temporal_Memset]
+      |= bit_arch_Avoid_Non_Temporal_Memset;
+
   cpu_features->cachesize_non_temporal_divisor = 4;
 #if !HAS_CPUID
   if (__get_cpuid_max (0, 0) == 0)
@@ -780,6 +786,11 @@ init_cpu_features (struct cpu_features *cpu_features)
       get_extended_indices (cpu_features);
 
       update_active (cpu_features);
+
+      /* Benchmarks indicate non-temporal memset can be profitable on Intel
+	hardware.  */
+      cpu_features->preferred[index_arch_Avoid_Non_Temporal_Memset]
+	  &= ~bit_arch_Avoid_Non_Temporal_Memset;
 
       if (family == 0x06)
 	{
@@ -975,9 +986,8 @@ https://www.intel.com/content/www/us/en/support/articles/000059422/processors.ht
 	cpu_features->preferred[index_arch_Avoid_Short_Distance_REP_MOVSB]
 	  |= bit_arch_Avoid_Short_Distance_REP_MOVSB;
     }
-  /* This spells out "AuthenticAMD" or "HygonGenuine".  */
-  else if ((ebx == 0x68747541 && ecx == 0x444d4163 && edx == 0x69746e65)
-	   || (ebx == 0x6f677948 && ecx == 0x656e6975 && edx == 0x6e65476e))
+  /* This spells out "AuthenticAMD".  */
+  else if (ebx == 0x68747541 && ecx == 0x444d4163 && edx == 0x69746e65)
     {
       unsigned int extended_model;
 
@@ -991,6 +1001,11 @@ https://www.intel.com/content/www/us/en/support/articles/000059422/processors.ht
       update_active (cpu_features);
 
       ecx = cpu_features->features[CPUID_INDEX_1].cpuid.ecx;
+
+      /* Benchmarks indicate non-temporal memset can be profitable on AMD
+	hardware.  */
+      cpu_features->preferred[index_arch_Avoid_Non_Temporal_Memset]
+	  &= ~bit_arch_Avoid_Non_Temporal_Memset;
 
       if (CPU_FEATURE_USABLE_P (cpu_features, AVX))
 	{
@@ -1088,6 +1103,25 @@ https://www.intel.com/content/www/us/en/support/articles/000059422/processors.ht
 	    }
 	}
     }
+  /* This spells out "HygonGenuine".  */
+  else if (ebx == 0x6f677948 && ecx == 0x656e6975 && edx == 0x6e65476e)
+    {
+      unsigned int extended_model;
+
+      kind = arch_kind_hygon;
+
+      get_common_indices (cpu_features, &family, &model, &extended_model,
+			  &stepping);
+
+      get_extended_indices (cpu_features);
+
+      update_active (cpu_features);
+
+      /* Benchmarks indicate non-temporal memset can be profitable on Hygon
+       hardware.  */
+      cpu_features->preferred[index_arch_Avoid_Non_Temporal_Memset]
+	    &= ~bit_arch_Avoid_Non_Temporal_Memset;
+    }
   else
     {
       kind = arch_kind_other;
@@ -1102,6 +1136,10 @@ https://www.intel.com/content/www/us/en/support/articles/000059422/processors.ht
   /* Support i686 if CMOV is available.  */
   if (CPU_FEATURES_CPU_P (cpu_features, CMOV))
     cpu_features->preferred[index_arch_I686] |= bit_arch_I686;
+
+  /* No ERMS, we want to avoid stosb for memset.  */
+  if (!CPU_FEATURE_USABLE_P (cpu_features, ERMS))
+    cpu_features->preferred[index_arch_Avoid_STOSB] |= bit_arch_Avoid_STOSB;
 
 #if !HAS_CPUID
 no_cpuid:

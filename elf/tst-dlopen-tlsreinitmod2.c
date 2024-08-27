@@ -1,5 +1,5 @@
-/* stat64 with error checking.
-   Copyright (C) 2017-2024 Free Software Foundation, Inc.
+/* Test that dlopen preserves already accessed TLS (bug 31717), module 2.
+   Copyright (C) 2024 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -16,15 +16,15 @@
    License along with the GNU C Library; if not, see
    <https://www.gnu.org/licenses/>.  */
 
-/* NB: Non-standard file name to avoid sysdeps override for xstat.  */
+#include <stdio.h>
 
-#include <support/check.h>
-#include <support/xunistd.h>
-#include <sys/stat.h>
+/* Defined in tst-dlopen-tlsreinitmod3.so.  This an underlinked symbol
+   dependency.  */
+extern void call_tlsreinitmod3 (void);
 
-void
-xstat (const char *path, struct stat64 *result)
+static void __attribute__ ((constructor))
+tlsreinitmod2_init (void)
 {
-  if (stat64 (path, result) != 0)
-    FAIL_EXIT1 ("stat64 (\"%s\"): %m", path);
+  puts ("info: constructor of tst-dlopen-tlsreinitmod2.so invoked");
+  call_tlsreinitmod3 ();
 }

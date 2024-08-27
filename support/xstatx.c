@@ -1,5 +1,5 @@
-/* Get the symbol address.  Generic version.
-   Copyright (C) 1999-2024 Free Software Foundation, Inc.
+/* Error-checking wrapper for statx.
+   Copyright (C) 2024 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -16,18 +16,17 @@
    License along with the GNU C Library; if not, see
    <https://www.gnu.org/licenses/>.  */
 
-#include <ldsodefs.h>
-#include <dl-fptr.h>
+#include <support/xunistd.h>
 
-void *
-_dl_symbol_address (struct link_map *map, const ElfW(Sym) *ref)
+#include <fcntl.h>
+#include <support/check.h>
+#include <sys/stat.h>
+
+void
+xstatx (int fd, const char *path, int flags, unsigned int mask,
+        struct statx *stx)
 {
-  ElfW(Addr) value = SYMBOL_ADDRESS (map, ref, false);
-
-  /* Return the pointer to function descriptor. */
-  if (ELFW(ST_TYPE) (ref->st_info) == STT_FUNC)
-    return (void *) _dl_make_fptr (map, ref, value);
-  else
-    return (void *) value;
+  if (statx (fd, path, flags, mask, stx) != 0)
+    FAIL_EXIT1 ("statx (AT_FDCWD, \"%s\", 0x%x, 0x%x): %m",
+                path, (unsigned int) flags, mask);
 }
-rtld_hidden_def (_dl_symbol_address)

@@ -1,5 +1,5 @@
-/* fstat64 with error checking.
-   Copyright (C) 2017-2024 Free Software Foundation, Inc.
+/* Error checking for descriptor-based stat functions.
+   Copyright (C) 2024 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -18,11 +18,10 @@
 
 #include <support/check.h>
 #include <support/xunistd.h>
-#include <sys/stat.h>
 
 void
-xfstat (int fd, struct stat64 *result)
+support_check_stat_fd (const char *name, int fd, int result)
 {
-  if (fstat64 (fd, result) != 0)
-    FAIL_EXIT1 ("fstat64 (%d): %m", fd);
+  if (result != 0)
+    FAIL_EXIT1 ("%s (%d): %m", name, fd);
 }

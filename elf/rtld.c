@@ -1501,12 +1501,16 @@ dl_main (const ElfW(Phdr) *phdr,
 	  _dl_version ();
 	else if (_dl_argv[1][0] == '-' && _dl_argv[1][1] == '-')
 	  {
-	   if (_dl_argv[1][1] == '\0')
-	     /* End of option list.  */
-	     break;
-	   else
-	     /* Unrecognized option.  */
-	     _dl_usage (ld_so_name, _dl_argv[1]);
+	    if (_dl_argv[1][2] == '\0')
+	      {
+		/* End of option list.  */
+		--_dl_argc;
+		++_dl_argv;
+		break;
+	      }
+	    else
+	      /* Unrecognized option.  */
+	      _dl_usage (ld_so_name, _dl_argv[1]);
 	  }
 	else
 	  break;
@@ -2338,7 +2342,7 @@ dl_main (const ElfW(Phdr) *phdr,
      into the main thread's TLS area, which we allocated above.
      Note: thread-local variables must only be accessed after completing
      the next step.  */
-  _dl_allocate_tls_init (tcbp, false);
+  _dl_allocate_tls_init (tcbp, true);
 
   /* And finally install it for the main thread.  */
   if (! __rtld_tls_init_tp_called)

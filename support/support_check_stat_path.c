@@ -1,5 +1,5 @@
-/* Function descriptors. Generic version.
-   Copyright (C) 1995-2024 Free Software Foundation, Inc.
+/* Error checking for path-based stat functions.
+   Copyright (C) 2017-2024 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -16,30 +16,12 @@
    License along with the GNU C Library; if not, see
    <https://www.gnu.org/licenses/>.  */
 
-#ifndef dl_fptr_h
-#define dl_fptr_h 1
+#include <support/check.h>
+#include <support/xunistd.h>
 
-/* An FDESC is a function descriptor.  */
-
-struct fdesc
-  {
-    ElfW(Addr) ip;	/* code entry point */
-    ElfW(Addr) gp;	/* global pointer */
-  };
-
-struct fdesc_table
-  {
-    struct fdesc_table *next;
-    unsigned int len;			/* # of entries in fdesc table */
-    volatile unsigned int first_unused;	/* index of first available entry */
-    struct fdesc fdesc[0];
-  };
-
-struct link_map;
-
-extern ElfW(Addr) _dl_boot_fptr_table [];
-
-extern ElfW(Addr) _dl_make_fptr (struct link_map *, const ElfW(Sym) *,
-				 ElfW(Addr));
-
-#endif /* !dl_fptr_h */
+void
+support_check_stat_path (const char *name, const char *path, int result)
+{
+  if (result != 0)
+    FAIL_EXIT1 ("%s (\"%s\"): %m", name, path);
+}

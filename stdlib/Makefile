@@ -274,6 +274,7 @@ tests := \
   tst-bz20544 \
   tst-canon-bz26341 \
   tst-concurrent-exit \
+  tst-concurrent-quick_exit \
   tst-cxa_atexit \
   tst-environ \
   tst-getrandom \
@@ -625,3 +626,4 @@ $(objpfx)tst-setcontext3.out: tst-setcontext3.sh $(objpfx)tst-setcontext3
 
 $(objpfx)tst-qsort5: $(libm)
 $(objpfx)tst-concurrent-exit: $(shared-thread-library)
+$(objpfx)tst-concurrent-quick_exit: $(shared-thread-library)

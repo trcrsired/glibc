@@ -1,5 +1,5 @@
-/* lstat64 with error checking.
-   Copyright (C) 2017-2024 Free Software Foundation, Inc.
+/* Check if quick_exit can be called concurrently by multiple threads.
+   Copyright (C) 2024 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -16,13 +16,7 @@
    License along with the GNU C Library; if not, see
    <https://www.gnu.org/licenses/>.  */
 
-#include <support/check.h>
-#include <support/xunistd.h>
-#include <sys/stat.h>
+#define EXIT(__r)    quick_exit (__r)
+#define ATEXIT(__f)  at_quick_exit (__f)
 
-void
-xlstat (const char *path, struct stat64 *result)
-{
-  if (lstat64 (path, result) != 0)
-    FAIL_EXIT1 ("lstat64 (\"%s\"): %m", path);
-}
+#include "tst-concurrent-exit-skeleton.c"

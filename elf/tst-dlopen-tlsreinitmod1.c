@@ -1,5 +1,5 @@
-/* 64-bit time_t stat with error checking.
-   Copyright (C) 2021-2024 Free Software Foundation, Inc.
+/* Test that dlopen preserves already accessed TLS (bug 31717), module 1.
+   Copyright (C) 2024 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -16,17 +16,5 @@
    License along with the GNU C Library; if not, see
    <https://www.gnu.org/licenses/>.  */
 
-/* NB: Non-standard file name to avoid sysdeps override for xstat.  */
-
-#include <support/check.h>
-#include <support/xunistd.h>
-#include <sys/stat.h>
-
-#if __TIMESIZE != 64
-void
-xfstat_time64 (int fd, struct __stat64_t64 *result)
-{
-  if (__fstat64_time64 (fd, result) != 0)
-    FAIL_EXIT1 ("__fstat64_time64 (%d): %m", fd);
-}
-#endif
+/* This module triggers loading of tst-dlopen-tlsreinitmod2.so and
+   tst-dlopen-tlsreinitmod3.so.  */
