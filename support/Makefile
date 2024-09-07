@@ -49,6 +49,8 @@ libsupport-routines = \
   support_check_stat_fd \
   support_check_stat_path \
   support_chroot \
+  support_compare_file_bytes \
+  support_compare_file_string \
   support_copy_file \
   support_copy_file_range \
   support_create_timer \
@@ -62,9 +64,12 @@ libsupport-routines = \
   support_format_herrno \
   support_format_hostent \
   support_format_netent \
+  support_fuse \
   support_isolate_in_subprocess \
   support_mutex_pi_monotonic \
   support_need_proc \
+  support_open_and_compare_file_bytes \
+  support_open_and_compare_file_string \
   support_openpty \
   support_path_support_time64 \
   support_paths \
@@ -73,6 +78,8 @@ libsupport-routines = \
   support_quote_blob \
   support_quote_blob_wide \
   support_quote_string \
+  support_readdir_check \
+  support_readdir_r_check \
   support_record_failure \
   support_run_diff \
   support_select_modifies_timeout \
@@ -115,6 +122,7 @@ libsupport-routines = \
   xclock_settime_time64 \
   xclone \
   xclose \
+  xclosedir \
   xconnect \
   xcopy_file_range \
   xdlfcn \
@@ -122,6 +130,7 @@ libsupport-routines = \
   xdup2 \
   xfchmod \
   xfclose \
+  xfdopendir \
   xfgets \
   xfopen \
   xfork \
@@ -143,6 +152,7 @@ libsupport-routines = \
   xmunmap \
   xnewlocale \
   xopen \
+  xopendir \
   xpipe \
   xpoll \
   xposix_memalign \
@@ -318,6 +328,7 @@ tests = \
   tst-support_capture_subprocess \
   tst-support_descriptors \
   tst-support_format_dns_packet \
+  tst-support_fuse \
   tst-support_quote_blob \
   tst-support_quote_blob_wide \
   tst-support_quote_string \
@@ -327,6 +338,7 @@ tests = \
   tst-test_compare_string \
   tst-test_compare_string_wide \
   tst-timespec \
+  tst-xdirent \
   tst-xreadlink \
   tst-xsigstack \
   # tests
