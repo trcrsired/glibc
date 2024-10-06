@@ -457,6 +457,7 @@ tests += \
   tst-single_threaded-pthread \
   tst-sonamemove-dlopen \
   tst-sonamemove-link \
+  tst-startup-errno \
   tst-thrlock \
   tst-tls-dlinfo \
   tst-tls-ie \
@@ -3145,7 +3146,7 @@ $(objpfx)tst-dlopen-tlsreinit4: \
 # tst-dlopen-tlsreinitmod3.so.  The dependency is provided via
 # $(objpfx)tst-dlopen-tlsreinitmod1.so.
 tst-dlopen-tlsreinitmod2.so-no-z-defs = yes
-$(objpfx)tst-dlopen-tlsreinit.out: $(objpfx)tst-dlopen-tlsreinitmod1.so \
+$(objpfx)tst-dlopen-tlsreinit1.out: $(objpfx)tst-dlopen-tlsreinitmod1.so \
   $(objpfx)tst-dlopen-tlsreinitmod2.so $(objpfx)tst-dlopen-tlsreinitmod3.so
 # Reuse an audit module which provides ample debug logging.
 $(objpfx)tst-dlopen-tlsreinit3.out: $(objpfx)tst-auditmod1.so

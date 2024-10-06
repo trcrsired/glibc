@@ -207,6 +207,7 @@ tests := \
   tst-cookie \
   tst-dprintf-length \
   tst-fdopen \
+  tst-fdopen2 \
   tst-ferror \
   tst-fgets \
   tst-fgets2 \
@@ -217,12 +218,21 @@ tests := \
   tst-fmemopen4 \
   tst-fphex \
   tst-fphex-wide \
+  tst-fread \
   tst-freopen2 \
   tst-freopen3 \
+  tst-freopen4 \
+  tst-freopen5 \
+  tst-freopen6 \
   tst-freopen64-2 \
   tst-freopen64-3 \
+  tst-freopen64-4 \
+  tst-freopen64-6 \
   tst-fseek \
   tst-fwrite \
+  tst-fwrite-memstrm \
+  tst-fwrite-overflow \
+  tst-fwrite-ro \
   tst-getline \
   tst-getline-enomem \
   tst-gets \
@@ -322,8 +332,13 @@ ifneq ($(PERL),no)
 tests-special += \
   $(objpfx)tst-freopen2-mem.out \
   $(objpfx)tst-freopen3-mem.out \
+  $(objpfx)tst-freopen4-mem.out \
+  $(objpfx)tst-freopen5-mem.out \
+  $(objpfx)tst-freopen6-mem.out \
   $(objpfx)tst-freopen64-2-mem.out \
   $(objpfx)tst-freopen64-3-mem.out \
+  $(objpfx)tst-freopen64-4-mem.out \
+  $(objpfx)tst-freopen64-6-mem.out \
   $(objpfx)tst-getline-enomem-mem.out \
   $(objpfx)tst-getline-mem.out \
   $(objpfx)tst-printf-bz18872-mem.out \
@@ -339,10 +354,20 @@ generated += \
   tst-freopen2.mtrace \
   tst-freopen3-mem.out \
   tst-freopen3.mtrace \
+  tst-freopen4-mem.out \
+  tst-freopen4.mtrace \
+  tst-freopen5-mem.out \
+  tst-freopen5.mtrace \
+  tst-freopen6-mem.out \
+  tst-freopen6.mtrace \
   tst-freopen64-2-mem.out \
   tst-freopen64-2.mtrace \
   tst-freopen64-3-mem.out \
   tst-freopen64-3.mtrace \
+  tst-freopen64-4-mem.out \
+  tst-freopen64-4.mtrace \
+  tst-freopen64-6-mem.out \
+  tst-freopen64-6.mtrace \
   tst-getline-enomem-mem.out \
   tst-getline-enomem.mtrace \
   tst-getline-mem.out \
@@ -474,6 +499,21 @@ tst-freopen3-ENV = \
 tst-freopen64-3-ENV = \
   MALLOC_TRACE=$(objpfx)tst-freopen64-3.mtrace \
   LD_PRELOAD=$(common-objpfx)malloc/libc_malloc_debug.so
+tst-freopen4-ENV = \
+  MALLOC_TRACE=$(objpfx)tst-freopen4.mtrace \
+  LD_PRELOAD=$(common-objpfx)malloc/libc_malloc_debug.so
+tst-freopen64-4-ENV = \
+  MALLOC_TRACE=$(objpfx)tst-freopen64-4.mtrace \
+  LD_PRELOAD=$(common-objpfx)malloc/libc_malloc_debug.so
+tst-freopen5-ENV = \
+  MALLOC_TRACE=$(objpfx)tst-freopen5.mtrace \
+  LD_PRELOAD=$(common-objpfx)malloc/libc_malloc_debug.so
+tst-freopen6-ENV = \
+  MALLOC_TRACE=$(objpfx)tst-freopen6.mtrace \
+  LD_PRELOAD=$(common-objpfx)malloc/libc_malloc_debug.so
+tst-freopen64-6-ENV = \
+  MALLOC_TRACE=$(objpfx)tst-freopen64-6.mtrace \
+  LD_PRELOAD=$(common-objpfx)malloc/libc_malloc_debug.so
 
 $(objpfx)tst-unbputc.out: tst-unbputc.sh $(objpfx)tst-unbputc
 	$(SHELL) $< $(common-objpfx) '$(test-program-prefix)'; \
@@ -558,7 +598,7 @@ CFLAGS-tst-gets.c += -Wno-deprecated-declarations
 
 # BZ #11319 was first fixed for regular vdprintf, then reopened because
 # the fortified version had the same bug.
-CFLAGS-tst-bz11319-fortify2.c += $(no-fortify-source),-D_FORTIFY_SOURCE=2
+CFLAGS-tst-bz11319-fortify2.c += $(no-fortify-source) -D_FORTIFY_SOURCE=2
 
 CFLAGS-tst-memstream-string.c += -fno-builtin-fprintf
 

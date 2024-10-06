@@ -19,9 +19,11 @@
 #include <stdio.h>
 #include <support/check.h>
 
-/* Verify that fclose on an unopened file returns EOF.  This is not part
-   of the fclose external contract but there are dependancies on this
-   behaviour.  */
+/* Verify that fclose on an unopened file returns EOF.  This test uses
+   a file with an unallocated buffer.
+
+   This is not part of the fclose external contract but there are
+   dependencies on this behaviour.  */
 
 static int
 do_test (void)

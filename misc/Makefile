@@ -292,6 +292,12 @@ tests-static := tst-empty
 tests-internal += tst-fd_to_filename
 tests-static += tst-fd_to_filename
 
+# Tests with long run times.
+xtests += \
+  tst-mkstemp-fuse \
+  tst-mkstemp-fuse-parallel \
+  # xtests
+
 ifeq ($(run-built-tests),yes)
 ifeq (yes,$(build-shared))
 ifneq ($(PERL),no)
@@ -375,3 +381,4 @@ $(objpfx)tst-select: $(librt)
 $(objpfx)tst-select-time64: $(librt)
 $(objpfx)tst-pselect: $(librt)
 $(objpfx)tst-pselect-time64: $(librt)
+$(objpfx)tst-mkstemp-fuse-parallel: $(shared-thread-library)

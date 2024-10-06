@@ -386,7 +386,6 @@ static void dl_main (const ElfW(Phdr) *phdr, ElfW(Word) phnum,
 
 /* These two variables cannot be moved into .data.rel.ro.  */
 static struct libname_list _dl_rtld_libname;
-static struct libname_list _dl_rtld_libname2;
 
 /* Variable for statistics.  */
 RLTD_TIMING_DECLARE (relocate_time, static);
@@ -452,6 +451,8 @@ _dl_start_final (void *arg, struct dl_start_final_info *info)
 #endif
 {
   ElfW(Addr) start_addr;
+
+  __rtld_malloc_init_stubs ();
 
   /* Do not use an initializer for these members because it would
      interfere with __rtld_static_init.  */
@@ -574,8 +575,6 @@ _dl_start (void *arg)
      header table in core.  Put the rest of _dl_start into a separate
      function, that way the compiler cannot put accesses to the GOT
      before ELF_DYNAMIC_RELOCATE.  */
-
-  __rtld_malloc_init_stubs ();
 
 #ifdef DONT_USE_BOOTSTRAP_MAP
   return _dl_start_final (arg);
@@ -1166,29 +1165,6 @@ rtld_setup_main_map (struct link_map *main_map)
 				 + ph->p_vaddr);
 	/* _dl_rtld_libname.next = NULL;	Already zero.  */
 	GL(dl_rtld_map).l_libname = &_dl_rtld_libname;
-
-	/* Ordinarily, we would get additional names for the loader from
-	   our DT_SONAME.  This can't happen if we were actually linked as
-	   a static executable (detect this case when we have no DYNAMIC).
-	   If so, assume the filename component of the interpreter path to
-	   be our SONAME, and add it to our name list.  */
-	if (GL(dl_rtld_map).l_ld == NULL)
-	  {
-	    const char *p = NULL;
-	    const char *cp = _dl_rtld_libname.name;
-
-	    /* Find the filename part of the path.  */
-	    while (*cp != '\0')
-	      if (*cp++ == '/')
-		p = cp;
-
-	    if (p != NULL)
-	      {
-		_dl_rtld_libname2.name = p;
-		/* _dl_rtld_libname2.next = NULL;  Already zero.  */
-		_dl_rtld_libname.next = &_dl_rtld_libname2;
-	      }
-	  }
 
 	has_interp = true;
 	break;

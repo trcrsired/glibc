@@ -96,6 +96,7 @@ tests = \
   tst-ext \
   tst-ext2 \
   tst-fclose-unopened \
+  tst-fclose-unopened2 \
   tst-fdopen-seek-failure \
   tst-fgetc-after-eof \
   tst-fgetwc \
@@ -251,6 +252,9 @@ LDFLAGS-tst-bz24228 = -Wl,--version-script=tst-bz24228.map
 
 tst_wprintf2-ARGS = "Some Text"
 
+tst-fclose-unopened2-ENV = \
+  MALLOC_TRACE=$(objpfx)tst-fclose-unopened2.mtrace \
+  LD_PRELOAD=$(common-objpfx)/malloc/libc_malloc_debug.so
 test-fmemopen-ENV = MALLOC_TRACE=$(objpfx)test-fmemopen.mtrace \
 		    LD_PRELOAD=$(common-objpfx)/malloc/libc_malloc_debug.so
 tst-fdopen-seek-failure-ENV = \
@@ -275,6 +279,8 @@ generated += \
   tst-bz22415.mtrace \
   tst-bz24228.check \
   tst-bz24228.mtrace \
+  tst-fclose-unopened2.check \
+  tst-fclose-unopened2.mtrace \
   tst-fdopen-seek-failure.check \
   tst-fdopen-seek-failure.mtrace \
   tst-fopenloc.check \
@@ -287,11 +293,18 @@ endif
 ifeq ($(build-shared),yes)
 aux	+= oldfileops oldstdfiles
 tests += \
+  tst-fopen-compat \
   tst-stderr-compat \
 # tests
 tests-2.0 += \
+  tst-fopen-compat \
   tst-stderr-compat \
 # tests-2.0
+
+tst-fopen-compat-ARGS = tst-fopen-compat.c
+# Disable PIE to trigger copy relocation.
+CFLAGS-tst-fopen-compat.c += -fno-pie
+tst-fopen-compat-no-pie = yes
 endif
 
 shared-only-routines = oldiofopen oldiofdopen oldiofclose oldfileops	\
@@ -313,6 +326,7 @@ tests-special += \
   $(objpfx)test-fmemopen-mem.out \
   $(objpfx)tst-bz22415-mem.out \
   $(objpfx)tst-bz24228-mem.out \
+  $(objpfx)tst-fclose-unopened2-mem.out \
   $(objpfx)tst-fdopen-seek-failure-mem.out \
   $(objpfx)tst-fopenloc-mem.out \
   # tests-special
@@ -398,6 +412,11 @@ $(objpfx)tst-fopenloc-cmp.out: ../iconvdata/testdata/ISO-8859-1..UTF8 \
 
 $(objpfx)test-fmemopen-mem.out: $(objpfx)test-fmemopen.out
 	$(common-objpfx)malloc/mtrace $(objpfx)test-fmemopen.mtrace > $@; \
+	$(evaluate-test)
+
+$(objpfx)tst-fclose-unopened2-mem.out: $(objpfx)tst-fclose-unopened2.out
+	$(common-objpfx)malloc/mtrace \
+	  $(objpfx)tst-fclose-unopened2.mtrace > $@; \
 	$(evaluate-test)
 
 $(objpfx)tst-fdopen-seek-failure-mem.out: $(objpfx)tst-fdopen-seek-failure.out
